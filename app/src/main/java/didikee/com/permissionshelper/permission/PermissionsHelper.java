@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 public class PermissionsHelper {
 
     public static final int PERMISSION_REQUEST_CODE = 44;
+    public static final int PERMISSION_REQUEST_SETTING = 45;
     private String[] mNeedPermissions;//需要的权限
 
     private Activity mActivity;
@@ -136,13 +137,25 @@ public class PermissionsHelper {
                 // 启动app设置界面,用户手动获取权限
                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 intent.setData(Uri.parse("package:"+ mActivity.getPackageName()));
-                mActivity.startActivity(intent);
+                mActivity.startActivityForResult(intent,PERMISSION_REQUEST_SETTING);
             }
         });
 
         builder.setCancelable(false);
 
         builder.show();
+    }
+
+    /**
+     * 接收来自设置界面回来的回调
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode==PERMISSION_REQUEST_SETTING) {
+            startRequestNeedPermissions();
+        }
     }
 
     public interface onAllNeedPermissionsGrantedListener {
